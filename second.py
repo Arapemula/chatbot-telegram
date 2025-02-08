@@ -11,7 +11,6 @@ base_url = os.getenv("url")
 bot = os.getenv("token_openai")
 tele = os.getenv("token_tele")
 
-# Inisialisasi OpenAI API
 api = OpenAI(api_key=bot, base_url=base_url)
 
 # Handler untuk perintah /start
@@ -23,6 +22,7 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_message = update.message.text
 
     completion = api.chat.completions.create(
+        #sesuaikan model yang kamu gunakan
         model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
@@ -36,16 +36,9 @@ async def chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(ai_reply)
 
 def main():
-    # Inisialisasi bot dengan Application
     app = Application.builder().token(tele).build()
-
-    # Tambahkan command handler
     app.add_handler(CommandHandler("start", start))
-
-    # Tambahkan handler untuk pesan teks
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, chat))
-
-    # Jalankan bot
     print("Bot sedang berjalan...")
     app.run_polling()
 
